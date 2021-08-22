@@ -1,0 +1,45 @@
+####Plot 1
+
+filename <- file("C:\\Users\\Shivangi95\\Desktop\\household_power_consumption.txt")
+
+####Read the file from the dates 2007-02-01 and 2007-02-02.
+
+data <- read.table(text=grep("^[1,2]/2/2007",readLines(filename),value = TRUE),col.names = c("Date", "Time", "Global_active_power", "Global_reactive_power", "Voltage", "Global_intensity", "Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), sep = ";", header = TRUE)
+
+###load PNG device
+
+png(file = "Plot1.png", width = 480, height = 480, units = "px")
+
+####Create plot 1
+
+
+hist(data$Global_active_power, col = "red", main = "Global Active Power", xlab = "Global Active Power (kilowatts)", ylab="Frequency")
+
+
+####Converting Date and Time
+
+data$Date <- as.Date(data$Date, format = "%m/%d/%Y")
+DateTime <- paste(as.Date(data$Date), data$Time)
+data$DateTime <- as.POSIXct(DateTime)
+
+# Open PNG device
+png(file = "Plot2.png", width = 480, height = 480, units = "px")
+
+###creating Plot 2
+
+plot(data$Global_active_power ~ data$DateTime, type = "l", ylab = "Global Active Power (kilowatts)", xlab = "")
+
+# Open PNG device; create 'plot3.png'
+png(file = "Plot3.3.png", width = 480, height = 480, units = "px")
+
+####Creating Plot 3
+
+with(data, {
+  plot(Sub_metering_1 ~ DateTime, col = "black",type = "l", ylab = "Energy Sub metering",xlab = "")
+  lines(Sub_metering_2 ~ DateTime, col = "red")
+  lines(Sub_metering_3 ~ DateTime, col = 'blue')
+})
+
+###Legend
+
+legend("topright",col = c("black", "red", "blue"), lty = 1, lwd = 2, legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
